@@ -8,6 +8,7 @@ const app = express()
 app.use(cors({ origin: 'https://daliahbanda.com', credentials: true }))
 app.use(express.json())
 
+app.set('trust proxy', 1)
 app.use('/auth', AuthRouter)
 
 app.use('/api', apiLimiter)
