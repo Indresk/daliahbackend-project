@@ -1,7 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import { validateUser,generateAccessToken,generateRefreshToken,verifyRefreshToken,revokeRefreshToken} from '../auth/auth.js'
-import { loginLimiter } from '../middlewares/rateLimiters.js'
+import { loginLimiter,refreshLimiter } from '../middlewares/rateLimiters.js'
 
 const AuthRouter = express.Router()
 
@@ -27,7 +27,7 @@ AuthRouter.post('/login',loginLimiter, async (req, res) => {
   res.json({ accessToken })
 })
 
-AuthRouter.post('/refresh',loginLimiter, (req, res) => {
+AuthRouter.post('/refresh',refreshLimiter, (req, res) => {
   const token = req.cookies.refreshToken
   if (!token) return res.sendStatus(401)
 
