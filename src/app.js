@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import AuthRouter from './routes/auth.router.js'
-import { apiLimiter } from './middlewares/ratelimiters.js'
+import { apiLimiter } from './middlewares/rateLimiters.js'
 
 const app = express()
 

@@ -1,7 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import { validateUser,generateAccessToken,generateRefreshToken,verifyRefreshToken,revokeRefreshToken} from '../auth/auth.js'
-import { loginLimiter } from '../middlewares/ratelimiters.js'
+import { loginLimiter } from '../middlewares/rateLimiters.js'
 
 const AuthRouter = express.Router()
 
