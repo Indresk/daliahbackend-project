@@ -8,29 +8,7 @@ const PORT = process.env.PORT
 
 const app = express()
 
-
-app.use((req, res, next) => {
-  const origin = req.headers.origin || req.headers.referer;
-  console.log('Origen de la request:', origin);
-  
-  const allowedOrigins = ['https://daliahbanda.com', 'http://localhost:3000'];
-  
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  }
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-
-
-// app.use(cors({ origin: 'https://daliahbanda.com', credentials: true }))
+app.use(cors({ origin: 'https://daliahbanda.com', credentials: true }))
 app.use(express.json())
 app.set('trust proxy', 1)
 

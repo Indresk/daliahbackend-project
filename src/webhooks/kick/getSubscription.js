@@ -1,14 +1,9 @@
-export async function getStatus(payload,headers) {
+export async function getStatus(payload) {
   if (!payload) return;
+  console.log('Evento Kick:', payload);
+  const isLive = payload.data?.is_live ?? false;
   
-  const eventType = `${headers.event}.${headers.type}`;
-  console.log('Evento Kick:', eventType, payload);
-  
-  if (eventType === 'livestream.status.updated') {
-    const isLive = payload.data?.is_live ?? false;
-    
-    console.log(isLive ? '🔴 Stream INICIADO' : '⏹️ Stream TERMINADO');
-  }
+  console.log(isLive ? '🔴 Stream INICIADO' : '⏹️ Stream TERMINADO');
 }
 
 export async function getLiveStatus() {

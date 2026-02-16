@@ -3,6 +3,7 @@ import {getStatus} from '../webhooks/kick/getSubscription.js'
 import { getKickAuthUrl, exchangeCodeForToken} from '../webhooks/kick/kick.oauth.js'
 import { startFlow } from '../webhooks/kick/startFlow.js'
 import { savePKCE, getPKCE, clearPKCE } from '../util/pkceStorage.js';
+import kickWebhookMiddleware from '../webhooks/kick/verifyWebhook.js';
 
 const WebhookRouter = express.Router()
 
@@ -41,10 +42,10 @@ WebhookRouter.get('/kick/oauth/callback', async (req, res) => {
 });
 
 
-WebhookRouter.post('/kick',express.json(), async (req, res) => {
+WebhookRouter.post('/kick',kickWebhookMiddleware, async (req, res) => {
   try {
-    console.log('📩 Webhook recibido:',req.headers, req.body)
-    await getStatus(req.body,req.headers)
+    console.log('📩 Webhook recibido')
+    await getStatus(req.body)
     res.sendStatus(200)
   } catch (error) {
     console.error(error)
