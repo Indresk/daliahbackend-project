@@ -3,12 +3,19 @@ import getRawBody from 'raw-body';
 
 async function verifyKickWebhook(publicKeyBase64, signatureBase64, rawBody) {
     try {
-        const publicKeyBuffer = Buffer.from(publicKeyBase64, 'base64');
+        const publicKey = crypto.createPublicKey({
+            key: publicKeyBase64,
+            format: 'der',
+            type: 'spki'
+        });
         
+        console.log('✅ Clave RSA cargada:', publicKey.asymmetricKeyType); // 'rsa'
+        
+        // 2. Verificar RSA-PSS con SHA256 (estándar Kick)
         const isValid = crypto.verify(
-            null,
+            'sha256',  // Hash usado por Kick
             Buffer.from(rawBody, 'utf8'),
-            {key: publicKeyBuffer,format: 'der',type: 'spki'},
+            publicKey,
             Buffer.from(signatureBase64, 'base64')
         );
         
@@ -33,6 +40,9 @@ const kickWebhookMiddleware = async (req, res, next) => {
 
     // Activar cuando todo este funcionando bien*
     //if (!signature)return res.status(401).json({ error: 'Signature requerida' });
+    console.log('🔑 Key type preview:', publicKey.asymmetricKeyType);
+    console.log('📏 Signature length:', Buffer.from(signature, 'base64').length);
+    console.log('📏 Body length:', rawBody.length);
 
     console.log('KICK_PUBLIC_KEY preview:', process.env.KICK_PUBLIC_KEY.substring(0, 30));
     console.log('Key length bytes:', Buffer.from(process.env.KICK_PUBLIC_KEY, 'base64').length);
