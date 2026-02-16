@@ -30,7 +30,7 @@ const kickWebhookMiddleware = async (req, res, next) => {
     req.rawBody = rawBody.toString('utf8');
 
     const publicKey = process.env.KICK_PUBLIC_KEY;
-    //const signature = req.headers['kick-event-signature'];
+    const signature = req.headers['kick-event-signature'];
     const messageId = req.headers['kick-event-message-id'];
     const timestamp = req.headers['kick-event-message-timestamp'];
     
