@@ -3,7 +3,7 @@ import getRawBody from 'raw-body';
 
 async function verifyKickWebhook(publicKeyBase64, signatureBase64, rawBody) {
     try {
-        console.log('🔑 Usando PEM RSA:', publicKeyPem.includes('BEGIN PUBLIC KEY'));
+        console.log('🔑 Usando PEM RSA:', publicKeyBase64.includes('BEGIN PUBLIC KEY'));
     
         // 2. Crear verifier RSA-SHA256
         const verifier = crypto.createVerify('RSA-SHA256');
@@ -11,11 +11,11 @@ async function verifyKickWebhook(publicKeyBase64, signatureBase64, rawBody) {
         
         // 3. Verificar firma base64
         const signatureBuffer = Buffer.from(signatureBase64, 'base64');
-        const isValid = verifier.verify(publicKeyPem, signatureBuffer);
+        const isValid = verifier.verify(publicKeyBase64, signatureBuffer);
         
         console.log('✅ Verificación Kick:', isValid ? 'VÁLIDA' : 'INVÁLIDA');
         console.log('- Body len:', rawBody.length, 'Sig len:', signatureBuffer.length);
-        
+
         return isValid;
     } 
     catch (error) {
