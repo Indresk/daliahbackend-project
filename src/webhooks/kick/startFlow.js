@@ -26,5 +26,4 @@ export async function startFlow(accessToken) {
   }
   
   console.log('Subscription creada OK:', await response.json());
-  return response.json();
 }

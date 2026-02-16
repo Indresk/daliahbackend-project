@@ -1,7 +1,7 @@
-export async function getStatus(payload) {
+export async function getStatus(payload,headers) {
   if (!payload) return;
   
-  const eventType = `${payload.event}.${payload.type}`;
+  const eventType = `${headers.event}.${headers.type}`;
   console.log('Evento Kick:', eventType, payload);
   
   if (eventType === 'livestream.status.updated') {
