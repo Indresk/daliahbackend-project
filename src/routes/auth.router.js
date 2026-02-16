@@ -6,6 +6,7 @@ import { loginLimiter,refreshLimiter } from '../middlewares/rateLimiters.js'
 const AuthRouter = express.Router()
 
 AuthRouter.use(cookieParser())
+AuthRouter.use(express.json())
 
 AuthRouter.post('/login',loginLimiter, async (req, res) => {
   const { email, password } = req.body

@@ -7,7 +7,7 @@ async function verifyKickWebhook(publicKeyBase64, signatureBase64, rawBody) {
     const publicKeyData = Uint8Array.from(atob(publicKeyBase64), (c) => c.charCodeAt(0));
     
     const publicKey = await crypto.subtle.importKey(
-        'raw',
+        'spki',
         publicKeyData,
         { name: 'Ed25519', namedCurve: 'Ed25519' },
         false,
@@ -39,11 +39,14 @@ const kickWebhookMiddleware = async (req, res, next) => {
     const signature = req.headers['kick-event-signature'];
     const publicKey = process.env.KICK_PUBLIC_KEY;
 
+    // Activar cuando todo este funcionando bien*
+    //if (!signature)return res.status(401).json({ error: 'Signature requerida' });
+
     if (signature && publicKey) {
         const isValid = await verifyKickWebhook(publicKey, signature, req.rawBody);
         if (!isValid) {
-        console.log('Firma Kick inválida');
-        return res.status(401).json({ error: 'Firma inválida' });
+            console.log('Firma Kick inválida');
+            return res.status(401).json({ error: 'Firma inválida' });
         }
         console.log('Firma Kick verificada');
     }
