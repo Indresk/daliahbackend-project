@@ -2,30 +2,22 @@ import crypto from 'crypto';
 import getRawBody from 'raw-body';
 
 async function verifyKickWebhook(publicKeyBase64, signatureBase64, rawBody) {
-  try {
-
-    const publicKeyData = Uint8Array.from(atob(publicKeyBase64), (c) => c.charCodeAt(0));
-    
-    const publicKey = await crypto.subtle.importKey(
-        'spki',
-        publicKeyData,
-        { name: 'Ed25519', namedCurve: 'Ed25519' },
-        false,
-        ['verify']
-    );
-    
-    const signature = Uint8Array.from(atob(signatureBase64), (c) => c.charCodeAt(0));
-    
-    const isValid = await crypto.subtle.verify(
-        'Ed25519',
-        publicKey,
-        signature,
-        new TextEncoder().encode(rawBody)
-    );
-    
+    try {
+        const publicKeyBuffer = Buffer.from(publicKeyBase64, 'base64');
+        
+        const isValid = crypto.verify(
+            null,
+            Buffer.from(rawBody, 'utf8'),
+            {key: publicKeyBuffer,format: 'der',type: 'spki'},
+            Buffer.from(signatureBase64, 'base64')
+        );
+        
+        console.log('✅ Verificación Kick:', isValid ? 'VÁLIDA' : 'INVÁLIDA');
         return isValid;
-    } catch (error) {
-        console.error('Error verificando webhook Kick:', error);
+    } 
+    catch (error) {
+        console.error('Error crypto Kick:', error.message);
+        console.error('Key bytes:', publicKeyBase64.length, 'Sig bytes:', signatureBase64.length);
         return false;
     }
 }
