@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import getRawBody from 'raw-body';
 
-async function verifyKickWebhook(publicKeyPem, messageId, timestamp, rawBody) {
+async function verifyKickWebhook(publicKeyPem,signatureBase64, messageId, timestamp, rawBody) {
     try {
         const toSign = `${messageId}.${timestamp}.${rawBody}`;
         console.log('📝 ToSign preview:', toSign.substring(0, 100));
@@ -39,7 +39,7 @@ const kickWebhookMiddleware = async (req, res, next) => {
     console.log('Kick headers:', { messageId, timestamp });
 
     if (signature && publicKey) {
-        const isValid = await verifyKickWebhook(publicKey,messageId, timestamp, req.rawBody);
+        const isValid = await verifyKickWebhook(publicKey,signature,messageId, timestamp, req.rawBody);
         if (!isValid) {
             console.log('Firma Kick inválida');
             return res.status(401).json({ error: 'Firma inválida' });
