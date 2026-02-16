@@ -34,6 +34,9 @@ const kickWebhookMiddleware = async (req, res, next) => {
     // Activar cuando todo este funcionando bien*
     //if (!signature)return res.status(401).json({ error: 'Signature requerida' });
 
+    console.log('KICK_PUBLIC_KEY preview:', process.env.KICK_PUBLIC_KEY.substring(0, 30));
+    console.log('Key length bytes:', Buffer.from(process.env.KICK_PUBLIC_KEY, 'base64').length);
+
     if (signature && publicKey) {
         const isValid = await verifyKickWebhook(publicKey, signature, req.rawBody);
         if (!isValid) {
