@@ -1,18 +1,11 @@
+import { updateGeneralData } from "../../db/firebase.js";
+
 export async function getStatus(payload) {
   if (!payload) return;
   console.log('Evento Kick:', payload);
   const isLive = payload.data?.is_live ?? false;
-  
+  await updateGeneralData('live',{status:isLive})
   console.log(isLive ? '🔴 Stream INICIADO' : '⏹️ Stream TERMINADO');
-}
-
-export async function getLiveStatus() {
-  try {
-    return false;
-  } catch (error) {
-    console.error('Error:', error.message);
-    return false;
-  }
 }
 
 export async function verifySubscriptions(accessToken) {

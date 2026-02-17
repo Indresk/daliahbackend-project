@@ -4,6 +4,7 @@ import { getKickAuthUrl, exchangeCodeForToken} from '../webhooks/kick/kick.oauth
 import { startFlow } from '../webhooks/kick/startFlow.js'
 import { savePKCE, getPKCE, clearPKCE } from '../util/pkceStorage.js';
 import kickWebhookMiddleware from '../webhooks/kick/verifyWebhook.js';
+import { updateGeneralData } from '../db/firebase.js';
 
 const WebhookRouter = express.Router()
 
@@ -21,18 +22,18 @@ WebhookRouter.get('/kick/oauth/callback', async (req, res) => {
     if (error) throw new Error(`OAuth error: ${error}`);
     if (!code || !state) return res.status(400).send('Missing code or state');
 
-    console.log('OAuth state recibido:', state);
-
     const codeVerifier = getPKCE(state);
     if (!codeVerifier) throw new Error('Missing code_verifier - PKCE failed');
 
     const tokenData = await exchangeCodeForToken(code, codeVerifier);
-    process.env.KICK_REFRESH_TOKEN = tokenData.refresh_token;
+
+    await updateGeneralData("live",{kickRefreshToken:tokenData.refresh_token})
+    //pendiente - almacenar tambien datos de fecha de caducidad 2meses*
 
     clearPKCE(state);
 
+    //almacenar access token en DB
     const accessToken = tokenData.access_token;
-    console.log('OAuth completado. Access Token:', accessToken);
     await startFlow(accessToken);
     res.send('OAuth completado y suscripción creada');
   } catch (error) {
@@ -44,6 +45,7 @@ WebhookRouter.get('/kick/oauth/callback', async (req, res) => {
 
 WebhookRouter.post('/kick',kickWebhookMiddleware, async (req, res) => {
   try {
+    //Llamar verifyToken una vez vinculada la recuperación de refresh token de DB
     console.log('📩 Webhook recibido')
     await getStatus(req.body)
     res.sendStatus(200)

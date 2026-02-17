@@ -22,7 +22,6 @@ export function getKickAuthUrl(state = crypto.randomUUID()) {
     state: state                          
   });
   const url = `${KICK_AUTH_URL}?${params.toString()}`
-  console.log(url);
   return { url, state, code_verifier: pkce.code_verifier };
 }
 

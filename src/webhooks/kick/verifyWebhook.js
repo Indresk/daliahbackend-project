@@ -4,16 +4,12 @@ import getRawBody from 'raw-body';
 async function verifyKickWebhook(publicKeyPem,signatureBase64, messageId, timestamp, rawBody) {
     try {
         const toSign = `${messageId}.${timestamp}.${rawBody}`;
-        console.log('📝 ToSign preview:', toSign.substring(0, 100));
         
         const verifier = crypto.createVerify('RSA-SHA256');
         verifier.update(toSign);
         
         const signatureBuffer = Buffer.from(signatureBase64, 'base64');
         const isValid = verifier.verify(publicKeyPem, signatureBuffer);
-        
-        console.log('✅ Verificación Kick:', isValid ? 'VÁLIDA' : 'INVÁLIDA');
-        console.log('- Body len:', rawBody.length, 'Sig len:', signatureBuffer.length);
 
         return isValid;
     } 
@@ -34,9 +30,7 @@ const kickWebhookMiddleware = async (req, res, next) => {
     const messageId = req.headers['kick-event-message-id'];
     const timestamp = req.headers['kick-event-message-timestamp'];
     
-    // Activar cuando todo este funcionando bien*
-    //if (!signature)return res.status(401).json({ error: 'Signature requerida' });
-    console.log('Kick headers:', { messageId, timestamp });
+    if (!signature)return res.status(401).json({ error: 'Signature requerida' });
 
     if (signature && publicKey) {
         const isValid = await verifyKickWebhook(publicKey,signature,messageId, timestamp, req.rawBody);

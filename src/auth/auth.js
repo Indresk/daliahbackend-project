@@ -1,13 +1,16 @@
 import jwt from 'jsonwebtoken'
 import { addRefreshToken, removeRefreshToken, hasRefreshToken } from './tokenStore.js'
+import { verifyPassword } from './hashing.js'
 
 const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET
 
+//pendiente de crear registrarse de usuarios
+
 export async function validateUser(email, password) {
-  // Mock validation: replace with DB lookup in production
   if (!email || !password) return null
-  if (email === 'test@example.com' && password === 'password') return { id: '1', email }
+  const internalResponse = await getUser(email)
+  if (await verifyPassword(password,internalResponse.password)) return { id: internalResponse.id, email}
   return null
 }
 

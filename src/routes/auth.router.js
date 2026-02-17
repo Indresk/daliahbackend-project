@@ -8,6 +8,8 @@ const AuthRouter = express.Router()
 AuthRouter.use(cookieParser())
 AuthRouter.use(express.json())
 
+//pendiente de crear registrarse de usuarios
+
 AuthRouter.post('/login',loginLimiter, async (req, res) => {
   const { email, password } = req.body
 
