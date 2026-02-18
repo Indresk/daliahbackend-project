@@ -4,6 +4,8 @@ export async function getStatus(payload) {
   if (!payload) return;
   console.log('Evento Kick:', payload);
   const isLive = payload.data?.is_live ?? false;
+  console.log(payload.data?.is_live)
+  console.log(payload.is_live)
   await updateGeneralData('live',{status:isLive})
   console.log(isLive ? '🔴 Stream INICIADO' : '⏹️ Stream TERMINADO');
 }
