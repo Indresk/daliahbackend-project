@@ -39,7 +39,7 @@ export async function getFireData() {
 export async function updateGeneralData(element,newData) {
     try {
         await updateDoc(doc(db, "general-data",element),newData)
-        console.log(newData," Enviada correctamente")
+        console.log(newData," Enviada correctamente a ",element)
     } catch (error) {
         throw new Error(`Error registrando la data: ${error.message}`)
     }
